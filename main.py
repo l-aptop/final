@@ -2,6 +2,7 @@ from bleach.sanitizer import Cleaner
 from bleach.linkifier import Linker
 from sanic import Sanic
 from sanic.response import file
+from time import time
 connected = []
 cleaner = Cleaner(tags=[])
 app = Sanic('chat')
@@ -63,9 +64,10 @@ async def chat(request, ws):
             return await ws.send('{"error": "Someone with that username is already connected.", "code": 0}')
     username = clean(username).replace('\\', '\\\\')
     ws.username = username
+    ws.last = time()
     connected.append(ws)
     await ws.send(
-        '{"username": "System", "message": "Connected to chat successfully!<br>"'
+        '{"username": "System", "message": "Connected to chat successfully!<br>'
         'There are AMOUNT people online.<br><br>'
         'To view available Chat Bot commands, say !help"}'.replace('AMOUNT', str(len(connected)), 1)
     )
@@ -74,12 +76,14 @@ async def chat(request, ws):
     try:
         async for msg in ws:
             msg = transform(msg).replace('\\', '\\\\').replace('"', '\\"').replace('\n', '<br>')
-            if msg != "" and len(msg) < 500:
+            if msg != "" and len(msg) < 500 and (time() - ws.last) > 0.500:
+                ws.last = time()
                 print('{}: {}'.format(username, msg))
                 if msg.startswith('!'):
                     if msg == '!help':
                         await ws.send('{"username": "' + username + '", "message": "' + msg + '"}')
-                        await ws.send('{"username": "' + bot + '", "message": "<br>Hi <b>' + username + '</b>! My commands:<br>!online - shows everyone currently online"}')
+                        await ws.send('{"username": "' + bot + '", "message": "<br>Hi <b>' + username +
+                                      '</b>! My commands:<br>!online - shows everyone currently online"}')
                     elif msg == "!online":
                         await ws.send('{"username": "' + username + '", "message": "' + msg + '"}')
                         online = ""
