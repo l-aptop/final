@@ -1,4 +1,4 @@
-  var socket = null;
+var socket = null;
 var input = null;
 var map = {"Shift": false, "Enter": false};
 onkeydown = onkeyup = function(e){
@@ -15,7 +15,12 @@ function join() {
       return alert("Your username must be 1-12 characters in length.")
     } else {
         username = user.value.trim();
-        window.socket = new WebSocket("wss://" + location.host + "/socket?username=" + username);
+        if (location.protocol === "https:") {
+            proto = "wss";
+        } else {
+            proto = "ws";
+        }
+        window.socket = new WebSocket(proto + "://" + location.host + "/socket?username=" + username);
         user.remove();
         document.getElementById("username-title").remove();
         document.getElementById("join").remove();
