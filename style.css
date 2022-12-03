@@ -1,0 +1,153 @@
+body{
+  font-family: system-ui;
+  background-color: #252525;
+}
+
+h1{
+  text-align: center;
+  color: #ebab6e;
+}
+
+section{
+  padding: 0 10px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+section h2{
+  text-align: center;
+  color: #ebab6e;
+}
+
+section input{
+  color: white;
+  background-color: #252525;
+  border: 2px #6B553F solid;
+  border-radius: 6px;
+  text-align: center;
+  width: 300px;
+  height: 30px;
+  margin: 0 auto;
+  font-size: 16px;
+}
+
+section input:hover{
+    border: 2px #ebab6e solid;
+}
+
+section button{
+  width: 150px;
+  height: 40px;
+  margin: 20px auto;
+  color: #ebab6e;
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: 1px;
+  background-color: #6B553F;
+  border-radius: 6px;
+  border: 2px #ebab6e solid;
+  cursor: pointer;
+}
+
+section button:hover{
+  text-decoration: underline;
+}
+
+#messages{
+  position: relative;
+  z-index: 1;
+  border-radius: 20px 20px 20px 0;
+  padding: 0px;
+  color: white;
+  padding: 10px 20px;
+  background-color: #141414;
+  border-width: 5px;
+  border-color: #141414;
+  border-style: solid;
+}
+
+#send_container{
+  position: relative;
+  z-index: 9999;
+  height: 60px;
+  margin: 0px;
+  flex-direction: row;
+  display: flex;
+  justify-content: space-between;
+  background-color: #141414;
+  border: 5px #141414 solid;
+  border-radius: 0 0 20px 20px;
+  padding-left: 10px;
+  border-width: 0 5px 5px 5px;
+  border-color: #252525 #141414 #141414 #141414;
+  border-style: solid;
+}
+
+#send_container textarea{
+  color: white;
+  background-color: #252525;
+  border: 2px #6B553F solid;
+  border-radius: 6px;
+  width: 300px;
+  height: 30px;
+  font-size: 16px;
+  resize: none;
+  margin: 10px 0px;
+
+}
+
+#send_container button{
+  position: absolute;
+  margin: 10px;
+  color: #ebab6e;
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: 1px;
+  background-color: #6B553F;
+  border-radius: 6px;
+  border: 2px #ebab6e solid;
+  cursor: pointer;
+  width: 100px;
+  height: 37.5px;
+}
+
+#send_container button:hover{
+  text-decoration: underline;
+}
+
+@media only screen and (max-width: 600px) {
+
+
+  section input{
+    width: 53%;
+  }
+
+  #messages{
+    border-radius: 20px 20px 0 0;
+  }
+
+  #send_container {
+    justify-content: space-between;
+  }
+
+  #send_container textarea{
+    width: 50%;
+  }
+
+    #send_container button{
+    height: 37.5px;
+  }
+}
+
+@media only screen and (min-width: 600px) {
+
+#send_container{
+  width: 440px;
+}
+
+}
+
+.messagetext {
+  word-wrap: break-word;
+}
