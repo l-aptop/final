@@ -1,14 +1,17 @@
 from bleach.sanitizer import Cleaner
 from bleach.linkifier import Linker
 from sanic import Sanic
+from colorama import init, Fore
 from sanic.response import file
 from time import time
+from asyncio.futures import CancelledError
 connected = []
 cleaner = Cleaner(tags=[])
 app = Sanic('chat')
 bot = 'Chat Bot'
-run_ip = "127.0.0.1"
+run_ip = "127.46.6.4"
 port = 8080
+init()
 
 
 def open_in_new_tab(attrs, *args):
@@ -56,11 +59,13 @@ async def chat(request, ws):
     username = request.args.get('username', 'None').strip()
     username_l = username.lower()
     if username_l in ('system', bot.lower()) or username_l == "" or len(username) > 12:
-        print('[INFO] Failed connection attempt: Username not allowed (username: {})'.format(username))
+        print(Fore.YELLOW + '[INFO] Failed connection attempt: Username not allowed (username: {})'.format(username)
+              + Fore.RESET)
         return await ws.send('{"error": "Username not allowed.", "code": 0}')
     for user in connected:
         if lstrip(user.username) == username_l:
-            print("[INFO] Failed connection attempt: Username already connected (username: {})".format(username))
+            print(Fore.YELLOW + "[INFO] Failed connection attempt: Username already connected (username: {})"
+                  .format(username) + Fore.RESET)
             return await ws.send('{"error": "Someone with that username is already connected.", "code": 0}')
     username = clean(username).replace('\\', '\\\\')
     ws.username = username
@@ -71,7 +76,7 @@ async def chat(request, ws):
         'There are AMOUNT people online.<br><br>'
         'To view available Chat Bot commands, say !help"}'.replace('AMOUNT', str(len(connected)), 1)
     )
-    print('[INFO] {} connected'.format(username))
+    print(Fore.GREEN + '[INFO] {} connected'.format(username) + Fore.RESET)
     await broadcast('{"username": "System", "message": "<b>' + username + '</b> has joined the chat."}')
     try:
         async for msg in ws:
@@ -100,10 +105,11 @@ async def chat(request, ws):
                 else:
                     await broadcast('{"username": "' + username + '", "message": "' + msg + '"}')
     except Exception as e:
-        print('[ERROR] {}: {}'.format(type(e), str(e)))
+        if isinstance(e, CancelledError) is not True:
+            print(Fore.RED + '[ERROR] {}: {}'.format(type(e).__name__, str(e)) + Fore.RESET)
     finally:
         connected.remove(ws)
-        print('[INFO] {} disconnected'.format(username))
+        print(Fore.YELLOW + '[INFO] {} disconnected'.format(username) + Fore.RESET)
         return await broadcast('{"username": "System", "message": "<b>' + username + '</b> has left the chat."}')
 
 if __name__ == "__main__":
